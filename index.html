@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🍳 MEALBITE🍱 JUNCTION 🍳</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background-color: #e1ffe5;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 40px;
+      background-color: #0e0d0d;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .left-section {
+      display: flex;
+      align-items: center;
+    }
+
+    .bar-icon {
+      font-size: 26px;
+      margin-right: 15px;
+      cursor: pointer;
+      color: rgb(102, 150, 98);
+    }
+
+    .restaurant-name {
+      font-size: 2.2rem;
+      font-weight: bold;
+      color: #f70909;
+    }
+
+    .right-section {
+      display: flex;
+      align-items: center;
+      gap: 25px;
+    }
+
+    .cart-icon {
+      color: white;
+      text-decoration: none;
+      font-size: 28px;
+      position: relative;
+      cursor: pointer;
+    }
+
+    #cart-item-count {
+      position: absolute;
+      top: -8px;
+      right: -12px;
+      background-color: #e24916;
+      color: white;
+      border-radius: 50%;
+      padding: 2px 6px;
+      font-size: 13px;
+      font-weight: bold;
+      border: 1px solid white;
+    }
+
+
+    .login-btn {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #e24916;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .cart-popover {
+      display: none; 
+      position: absolute;
+      top: 75px; /* Position below the header */
+      right: 20px;
+      width: 320px;
+      max-height: 400px;
+      background-color: #fff3e0;
+      border-radius: 8px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      z-index: 1002;
+      border: 1px solid #e3d7c6;
+      flex-direction: column;
+    }
+
+    .cart-popover.show {
+        display: flex; /* Use flex to control layout */
+    }
+
+    .cart-popover h2 {
+        text-align: center;
+        margin-top: 0;
+        margin-bottom: 15px;
+        color: #b64011;
+        padding: 15px 15px 0 15px;
+    }
+
+    #cart-items {
+        overflow-y: auto; /* Allow scrolling for many items */
+        padding: 0 15px;
+    }
+    
+    .cart-footer {
+        margin-top: auto; /*  bottom */
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-top: 1px solid #e3d7c6;
+        padding: 15px;
+        background-color: #fff3e0;
+    }
+
+    .cart-footer p {
+        margin: 0;
+        font-size: 18px;
+        font-weight: bold;
+        color: #b64011;
+    }
+
+    .checkout-btn {
+        padding: 10px 20px;
+        background-color: #43a047;
+        color: white;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    
+
+    .login-form {
+      display: none;
+      margin: 30px auto;
+      padding: 20px;
+      background-color: #131313;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(17, 49, 206, 0.2);
+      max-width: 300px;
+      color: white;
+      text-align: center;
+    }
+
+    .login-form input {
+      width: 80%;
+      padding: 6px;
+      margin: 2px 0;
+      border: 1px solid #5d4d14;
+      border-radius: 5px;
+    }
+
+    .login-form button {
+      width: 100%;
+      padding: 10px;
+      background-color: #e11717;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .menu-section {
+      margin: 30px;
+    }
+
+    .menu-title {
+      text-align: center;
+      padding: 20px;
+      background-color: #fbeec1;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      margin-bottom: 30px;
+    }
+
+    .image-slider {
+      position: relative;
+      max-width: 600px;
+      margin: 20px auto;
+    }
+
+    .image-slider img {
+      width: 100%;
+      border-radius: 10px;
+      height: auto;
+    }
+
+    .image-slider .prev,
+    .image-slider .next {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: rgba(0,0,0,0.5);
+      color: white;
+      border: none;
+      padding: 10px;
+      font-size: 20px;
+      cursor: pointer;
+      border-radius: 50%;
+      z-index: 1;
+    }
+
+    .image-slider .prev { left: 10px; }
+    .image-slider .next { right: 10px; }
+
+    .menu-slider {
+      display: flex;
+      overflow-x: auto;
+      gap: 20px;
+      padding-bottom: 20px;
+      margin-bottom: 30px;
+    }
+
+    .menu-slider::-webkit-scrollbar {
+      height: 10px;
+    }
+
+    .menu-slider::-webkit-scrollbar-thumb {
+      background: #aaa;
+      border-radius: 6px;
+    }
+
+    .menu-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        justify-content: center;
+        padding-bottom: 20px;
+    }
+
+    .menu-item {
+      min-width: 250px;
+      background-color: #ffe0b2;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      font-size: 18px;
+      flex-shrink: 0;
+      text-align: center; /* Center align content */
+    }
+
+    .menu-grid .menu-item {
+        min-width: unset; /* Override min-width for grid items */
+    }
+
+    .menu-item img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-top: 10px;
+    }
+
+    .quantity-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 10px;
+      width: 100%;
+    }
+
+    .quantity-controls button {
+      background-color: #396a34;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      width: 30px;
+      height: 30px;
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .quantity-controls span {
+      font-size: 18px;
+      margin: 0 15px;
+      font-weight: bold;
+    }
+
+    .add-to-cart-btn {
+      margin-top: 10px;
+      padding: 8px 16px;
+      background-color: #43a047;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 100%;
+      font-size: 16px;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      height: 100%;
+      width: 250px;
+      position: fixed;
+      top: 0;
+      left: -260px;
+      background-color: #1b1b1b;
+      overflow-x: hidden;
+      padding-top: 60px;
+      transition: 0.4s;
+      z-index: 1001;
+    }
+
+    .sidebar a {
+      padding: 10px 20px;
+      text-decoration: none;
+      font-size: 18px;
+      color: #f2f2f2;
+      display: block;
+      transition: 0.3s;
+    }
+
+    .sidebar a:hover {
+      background-color: #333;
+      color: #ff7043;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      background-color: rgba(0,0,0,0.4);
+      display: none;
+      z-index: 1000;
+    }
+
+    #contact { /* Main sections */
+      padding: 40px;
+      margin: 30px;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    #cart-items p {
+        background-color: #e3d7c6;
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    #cart-items .remove-item-btn {
+        background-color: #e24916;
+        color: white;
+        border: none;
+        border-radius: 3px;
+        padding: 5px 8px;
+        font-size: 12px;
+        cursor: pointer;
+    }
+
+    #contact { background-color: #e0f2f1; }
+
+    /* Footer */
+    footer {
+      background-color: #000;
+      color: #fff;
+      padding: 50px 20px;
+      font-size: 14px;
+      text-align: center; 
+    }
+
+    footer h3 {
+      color: #ff6347;
+    }
+
+
+    footer ul {
+      list-style: none;
+      padding: 0;
+      display: flex; 
+      justify-content: center; 
+      gap: 20px; 
+      margin: 15px auto; 
+      flex-wrap: wrap; 
+    }
+
+    footer li {
+      margin-bottom: 0; 
+    }
+
+    footer a {
+      color: #fff;
+      text-decoration: none;
+      white-space: nowrap; 
+    }
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Chatbot styles */
+    #chatbot-container {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1000;
+    }
+
+    #chatbot-toggle {
+      background-color: #ff7043;
+      color: white;
+      padding: 15px 20px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    #chatbot-box {
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      width: 400px; 
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      position: absolute;
+      bottom: 70px;
+      right: 0;
+    }
+
+    #chatbot-header {
+      background-color: #bf360c;
+      color: white;
+      padding: 10px;
+      border-top-left-radius: 7px;
+      border-top-right-radius: 7px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    #chatbot-header span { 
+      font-size: 18px; 
+    }
+
+    #chatbot-header button {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    #chatbot-messages {
+      flex-grow: 1;
+      padding: 10px;
+      max-height: 500px; 
+      overflow-y: auto;
+      border-bottom: 1px solid #eee;
+    }
+
+    .chat-message {
+      margin-bottom: 10px;
+      padding: 8px 12px;
+      border-radius: 15px;
+      max-width: 80%;
+      word-wrap: break-word;
+      font-size: 16px; 
+    }
+
+    .user-message {
+      background-color: #e2f7d2;
+      align-self: flex-end;
+      margin-left: auto;
+      text-align: right;
+    }
+
+    .bot-message {
+      background-color: #dbdbe3;
+      align-self: flex-start;
+      margin-right: auto;
+      text-align: left;
+    }
+
+    #chatbot-input {
+      width: calc(100% - 20px);
+      padding: 5px; 
+      margin: 5px;
+      border: 1px solid #0dda2f;
+      border-radius: 5px;
+      font-size: 16px; 
+    }
+
+
+
+    /* --- MEDIA QUERIES FOR MOBILE --- */
+    @media (max-width: 768px) {
+      .header {
+        padding: 15px 20px;
+      }
+
+      .restaurant-name {
+        font-size: 1.5rem;
+      }
+      
+      .right-section {
+          gap: 15px;
+      }
+      
+      .cart-icon {
+          font-size: 24px;
+      }
+      
+      #cart-item-count {
+          font-size: 12px;
+          top: -6px;
+          right: -8px;
+      }
+
+      .login-btn {
+        padding: 8px 15px;
+        font-size: 14px;
+      }
+
+      .bar-icon {
+        font-size: 24px;
+        margin-right: 10px;
+      }
+
+      .menu-section {
+        margin: 15px;
+      }
+
+      .menu-title {
+        padding: 15px;
+      }
+
+      .menu-title h1 {
+        font-size: 1.8rem;
+      }
+
+      .menu-title p {
+        font-size: 0.9rem;
+      }
+
+      .image-slider {
+        max-width: 100%;
+      }
+
+      .menu-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+      }
+
+      .menu-item {
+        min-width: unset;
+      }
+
+      #contact {
+        margin: 15px;
+        padding: 25px;
+      }
+
+      footer ul {
+        flex-direction: row; 
+        gap: 15px; 
+        padding: 0 10px; 
+      }
+
+      /* Media Queries for Chatbot (Tablet) */
+      #chatbot-container {
+        bottom: 15px;
+        right: 15px;
+      }
+
+      #chatbot-toggle {
+        padding: 12px 16px;
+        font-size: 16px;
+      }
+
+      #chatbot-box {
+        width: 350px; /* Adjusted width for tablets */
+        bottom: 60px;
+      }
+
+      #chatbot-header span { /* Adjusted header text size for tablets */
+        font-size: 16px;
+      }
+
+      #chatbot-header button {
+        font-size: 16px;
+      }
+
+      #chatbot-messages {
+        max-height: 300px; /* Adjusted height for tablets */
+      }
+      .chat-message { /* Adjusted message font size for tablets */
+        font-size: 14px;
+      }
+      #chatbot-input {
+        font-size: 15px; /* Adjusted input font size for tablets */
+        padding: 6px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .header {
+        padding: 10px 15px;
+      }
+      
+      .cart-popover {
+          width: calc(100vw - 40px); /* Adjusted for better fit on mobile */
+          right: 20px;
+      }
+
+      .restaurant-name {
+        font-size: 1rem;
+      }
+
+      .bar-icon {
+        font-size: 22px;
+      }
+
+      .login-btn {
+        padding: 6px 12px;
+        font-size: 13px;
+      }
+
+      .menu-title h1 {
+        font-size: 1.5rem;
+      }
+
+      .menu-item {
+        font-size: 16px;
+      }
+
+      /* Media Queries for Chatbot (Mobile) */
+      #chatbot-container {
+        bottom: 10px;
+        right: 10px;
+      }
+
+      #chatbot-toggle {
+        padding: 10px 14px;
+        font-size: 14px;
+      }
+
+      #chatbot-box {
+        width: calc(100vw - 20px); /* Full width minus margins */
+            bottom: 50px;
+            right: 0;
+      }
+
+      #chatbot-header span { /* Adjusted header text size for mobile */
+        font-size: 14px;
+      }
+      #chatbot-header button {
+        font-size: 14px;
+      }
+
+      #chatbot-messages {
+        max-height: 200px; /* Adjusted height for smaller phones */
+      }
+
+      .chat-message { /* Adjusted message font size for mobile phones */
+        font-size: 13px; /* Smaller font for better fit */
+        max-width: 90%;
+        padding: 6px 10px; /* Slightly smaller padding */
+      }
+      #chatbot-input {
+        font-size: 14px; /* Adjusted input font size for mobile */
+        padding: 5px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="left-section">
+      <div class="bar-icon" onclick="toggleSidebar()">☰</div>
+      <div class="restaurant-name">🍳 MEALBITE🍱 JUNCTION 🍳</div>
+    </div>
+    <div class="right-section">
+        <a class="cart-icon" aria-label="View Cart" href="javascript:void(0)" onclick="toggleCartPopover()">🛒<span id="cart-item-count">0</span></a>
+        <button class="login-btn" onclick="toggleLoginForm()">Login</button>
+    </div>
+  </div>
+  
+  <div id="cart-popover" class="cart-popover">
+      <h2>Your Cart</h2>
+      <div id="cart-items">
+        <p style='text-align: center;'>Your cart is empty.</p>
+      </div>
+      <div class="cart-footer">
+        <p>Total: ₹<span id="cart-total">0</span></p>
+        <button class="checkout-btn" onclick="checkout()">Checkout</button>
+      </div>
+  </div>
+  <div id="sidebar" class="sidebar">
+    <a href="#" onclick="closeSidebar()">❌ Close</a>
+    <a href="#tea" onclick="closeSidebarAndScroll('tea-item')">📋 Menu</a>
+    <a href="#order" onclick="closeSidebarAndScroll('order')">🛒 Order</a>
+    <a href="#contact" onclick="closeSidebarAndScroll('contact')">📞 Contact Us</a>
+    
+  </div>
+  <div id="overlay" class="overlay" onclick="closeSidebar()"></div>
+
+  <div id="loginForm" class="login-form">
+    <h3>Login Here</h3>
+    <input type="text" id="loginId" placeholder="Login ID">
+    <input type="password" id="loginPassword" placeholder="Password">
+    <button onclick="submitLogin()">Submit</button>
+  </div>
+
+  <div class="menu-section" id="menu">
+    <div class="menu-title">
+      <h1 style="color: #e67e22;">👋 Welcome to <span style="color: #b64011;">MEALBITE🍱</span> Restaurant!</h1>
+      <p style="color: #0c1b7b;">Serving delicious bites made with love and flavor. Explore our menu and treat yourself today! 🍽</p>
+
+      <div class="image-slider">
+         <button class="prev" onclick="slideImage(-1)">❮</button>
+        <img id="sliderImage" src="https://img.freepik.com/free-photo/view-from-tanned-womans-stylish-outfits-talking-enjoying-tasty-food-street-cafe_197531-18196.jpg" alt="restaurant image">
+        <button class="next" onclick="slideImage(1)">❯</button>
+      </div>
+    </div>
+
+    <h2 style="text-align: center; color: #f35212; margin-top: 40px;">Our Specials</h2>
+    <div class="menu-slider">
+      <div class="menu-item" data-item-name="Chicken Tacos" data-item-price="399">🌮 Chicken Tacos - ₹399
+        <img src="https://easychickenrecipes.com/wp-content/uploads/2021/06/featured-chicken-fried-chicken-recipe.jpg" alt="Delicious Chicken Tacos">
+        <div class="quantity-controls" style="display: none;">
+          <button onclick="updateCartItem(this, -1)">-</button>
+          <span class="quantity">1</span>
+          <button onclick="updateCartItem(this, 1)">+</button>
+        </div>
+        <button class="add-to-cart-btn" onclick="initialAddToCart(this)">Add</button>
+      </div>
+      <div class="menu-item" data-item-name="Paneer Butter Masala" data-item-price="299">🧀 Paneer Butter Masala - ₹299
+        <img src="https://vegecravings.com/wp-content/uploads/2017/04/paneer-butter-masala-recipe-step-by-step-instructions.jpg" alt="Rich Paneer Butter Masala">
+        <div class="quantity-controls" style="display: none;">
+          <button onclick="updateCartItem(this, -1)">-</button>
+          <span class="quantity">1</span>
+          <button onclick="updateCartItem(this, 1)">+</button>
+        </div>
+        <button class="add-to-cart-btn" onclick="initialAddToCart(this)">Add</button>
+      </div>
+      <div class="menu-item" data-item-name="Chicken Biryani" data-item-price="249"> 🍝 Chicken Biryani - ₹249
+        <img src="https://purendesi.in/wp-content/uploads/2024/12/Andhra-Style-Chicken-Biryani.jpg" alt="Flavorful Chicken Biryani">
+        <div class="quantity-controls" style="display: none;">
+          <button onclick="updateCartItem(this, -1)">-</button>
+          <span class="quantity">1</span>
+          <button onclick="updateCartItem(this, 1)">+</button>
+        </div>
+        <button class="add-to-cart-btn" onclick="initialAddToCart(this)">Add</button>
+      </div>
+      <div class="menu-item" data-item-name="Caesar Salad" data-item-price="49"> 🥗 Caesar Salad - ₹49
+        <img src="https://cdn.loveandlemons.com/wp-content/uploads/2021/04/green-salad.jpg" alt="Fresh Caesar Salad">
+        <div class="quantity-controls" style="display: none;">
+          <button onclick="updateCartItem(this, -1)">-</button>
+          <span class="quantity">1</span>
+          <button onclick="updateCartItem(this, 1)">+</button>
+        </div>
+        <button class="add-to-cart-btn" onclick="initialAddToCart(this)">Add</button>
+      </div>
+      <div class="menu-item" data-item-name="Soft Drink" data-item-price="29"> 🥤 Soft Drink - ₹29
+        <img src="https://cdn.mos.cms.futurecdn.net/v2/t:0,l:420,cw:1080,ch:1080,q:80,w:1080/aSKEwAj45HqsqPiVzP3edE.jpg" alt="Chilled Soft Drink">
+        <div class="quantity-controls" style="display: none;">
+          <button onclick="updateCartItem(this, -1)">-</button>
+          <span class="quantity">1</span>
+          <button onclick="updateCartItem(this, 1)">+</button>
+        </div>
+        <button class="add-to-cart-btn" onclick="initialAddToCart(this)">Add</button>
+      </div>
+      <div class="menu-item" id="pizza-item" data-item-name="Pizza" data-item-price="69"> 🍕 Pizza - ₹69
+        <img src="https://www.foodandwine.com/thmb/Wd4lBRZz3X_8qBr69UOu2m7I2iw=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/classic-cheese-pizza-FT-RECIPE0422-31a2c938fc2546c9a07b7011658cfd05.jpg" alt="Classic Cheese Pizza">
+        <div class="quantity-controls" style="display: none;">
+          <button onclick="updateCartItem(this, -1)">-</button>
+          <span class="quantity">1</span>
+          <button onclick="updateCartItem(this, 1)">+</button>
+        </div>
+        <button class="add-to-cart-btn" onclick="initialAddToCart(this)">Add</button>
+      </div>
+    </div>
+
+    <h2 style="text-align: center; color: #ea3b05; margin-top: 40px;">Beverages & Snacks</h2>
+    <div class="menu-grid">
+      <div class="menu-item" data-item-name="Coffee" data-item-price="59"> ☕ Coffee - ₹59
+        <img src="https://upload.wikimedia.org/wikipedia/commons/4/45/A_small_cup_of_coffee.JPG" alt="Hot Coffee">
+        <div class="quantity-controls" style="display: none;">
+          <button onclick="updateCartItem(this, -1)">-</button>
+          <span class="quantity">1</span>
+          <button onclick="updateCartItem(this, 1)">+</button>
+        </div>
+        <button class="add-to-cart-btn" onclick="initialAddToCart(this)">Add</button>
+      </div>
+      <div class="menu-item" id="tea-item" data-item-name="Tea" data-item-price="39"> 🍵 Tea - ₹39
+        <img src="https://www.savoryspiceshop.com/cdn/shop/products/chai-tea-1330_800x533.jpg?v=1663263734" alt="Warm Tea">
+        <div class="quantity-controls" style="display: none;">
+          <button onclick="updateCartItem(this, -1)">-</button>
+          <span class="quantity">1</span>
+          <button onclick="updateCartItem(this, 1)">+</button>
+        </div>
+        <button class="add-to-cart-btn" onclick="initialAddToCart(this)">Add</button>
+      </div>
+      <div class="menu-item" data-item-name="Juice" data-item-price="79"> 🍹 Juice - ₹79
+        <img src="https://media.istockphoto.com/id/510565672/photo/cute-thinking-kid-girl-drinking-tasty-juice-in-street-restaurant.jpg?s=612x612&w=0&k=20&c=8GuV7UvI4CiDn1kf5XvPqE_7aWOatYYm7xBUMBEMxHQ=" alt="Fresh Juice">
+        <div class="quantity-controls" style="display: none;">
+          <button onclick="updateCartItem(this, -1)">-</button>
+          <span class="quantity">1</span>
+          <button onclick="updateCartItem(this, 1)">+</button>
+        </div>
+        <button class="add-to-cart-btn" onclick="initialAddToCart(this)">Add</button>
+      </div>
+      <div class="menu-item" data-item-name="Samosa" data-item-price="29"> 🥟 Samosa - ₹29
+        <img src="https://www.foodnetwork.com/content/dam/images/food/fullset/2021/08/3/0/FN_SAMOSAS_W_TAMARIND_CHUTNEY_H_f_s4x3.jpg" alt="Crispy Samosa">
+        <div class="quantity-controls" style="display: none;">
+          <button onclick="updateCartItem(this, -1)">-</button>
+          <span class="quantity">1</span>
+          <button onclick="updateCartItem(this, 1)">+</button>
+        </div>
+        <button class="add-to-cart-btn" onclick="initialAddToCart(this)">Add</button>
+      </div>
+      <div class="menu-item" data-item-name="Momos" data-item-price="99"> 🍜 Momos - ₹99
+        <img src="https://www.cookwithmanali.com/wp-content/uploads/2021/08/Schezwan-Paneer-Momos.jpg" alt="Steamed Momos">
+        <div class="quantity-controls" style="display: none;">
+          <button onclick="updateCartItem(this, -1)">-</button>
+          <span class="quantity">1</span>
+          <button onclick="updateCartItem(this, 1)">+</button>
+        </div>
+        <button class="add-to-cart-btn" onclick="initialAddToCart(this)">Add</button>
+      </div>
+      <div class="menu-item" data-item-name="Chowmin" data-item-price="119"> 🍝 Chowmin - ₹119
+        <img src="https://img.freepik.com/premium-photo/woman-eating-spaghetti-with-chopsticks-bowl_1034910-78501.jpg" alt="Delicious Chowmin noodles">
+        <div class="quantity-controls" style="display: none;">
+          <button onclick="updateCartItem(this, -1)">-</button>
+          <span class="quantity">1</span>
+          <button onclick="updateCartItem(this, 1)">+</button>
+        </div>
+        <button class="add-to-cart-btn" onclick="initialAddToCart(this)">Add</button>
+      </div>
+      <div class="menu-item" data-item-name="Chat" data-item-price="69"> 🥔 Chat - ₹69
+        <img src="https://img.restaurantguru.com/c95b-Restaurant-The-Chat-Cafe-food.jpg" alt="Spicy Aloo Chat">
+        <div class="quantity-controls" style="display: none;">
+          <button onclick="updateCartItem(this, -1)">-</button>
+          <span class="quantity">1</span>
+          <button onclick="updateCartItem(this, 1)">+</button>
+        </div>
+        <button class="add-to-cart-btn" onclick="initialAddToCart(this)">Add</button>
+      </div>
+      <div class="menu-item" data-item-name="Burger" data-item-price="119"> 🍔Burger - ₹119
+        <img src="https://staticcookist.akamaized.net/wp-content/uploads/sites/22/2021/09/beef-burger.jpg?im=AspectCrop=(16,9);" alt="burger">
+        <div class="quantity-controls" style="display: none;">
+          <button onclick="updateCartItem(this, -1)">-</button>
+          <span class="quantity">1</span>
+          <button onclick="updateCartItem(this, 1)">+</button>
+        </div>
+        <button class="add-to-cart-btn" onclick="initialAddToCart(this)">Add</button>
+      </div>
+      <div class="menu-item" data-item-name="Dahi Bara" data-item-price="79"> 🥛 Dahi Bara - ₹79
+        <img src="https://www.shutterstock.com/image-photo/indian-street-food-thayir-vadai-600nw-2084848174.jpg" alt="Soft Dahi Bara">
+        <div class="quantity-controls" style="display: none;">
+          <button onclick="updateCartItem(this, -1)">-</button>
+          <span class="quantity">1</span>
+          <button onclick="updateCartItem(this, 1)">+</button>
+        </div>
+        <button class="add-to-cart-btn" onclick="initialAddToCart(this)">Add</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="contact">
+    <h2>📞 Contact Us</h2>
+    <p>
+      Email: <a href="mailto:mealbite@example.com">mealbite@example.com</a><br>
+      Phone: <a href="tel:18000000200">1800-0000-200</a>
+    </p>
+  </div>
+
+  <footer>
+    <div style="display: flex; flex-wrap: wrap; justify-content: center; max-width: 1200px; margin: auto;">
+      <div>
+        <h3>FOLLOW US</h3>
+        <ul>
+          <li><a href="https://www.facebook.com/" target="_blank">📘 Facebook</a></li>
+          <li><a href="https://www.twitter.com/" target="_blank">🐦 Twitter</a></li>
+          <li><a href="https://www.instagram.com/" target="_blank">📸 Instagram</a></li>
+          <li><a href="https://www.youtube.com/" target="_blank">📺 YouTube</a></li>
+        </ul>
+      </div>
+    </div>
+    <p style="text-align: center; margin: 30px auto; max-width: 900px;">
+      Savor every bite—MEALBITE🍱 Junction brings fresh flavors right to you!
+      Experience quick service and delicious flavors with every order.<br>Your satisfaction is our top priority!
+    </p>
+    <p style="text-align: center;">Hurry up and place your order now!</p>
+    <div style="text-align: center; margin-top: 30px;">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSeQZahmlLhkhDdeZHDdmc2RwIrGE8AbmVbXQ&s" width="120" alt="FSSAI Logo" style="background-color: white; border-radius: 6px; padding: 4px;">
+      <p>© 2025 MEALBITE🍱 Junction. All rights reserved.<br>FSSAI License Number: 1800-0000-200</p>
+    </div>
+  </footer>
+
+  <div id="chatbot-container">
+    <button id="chatbot-toggle" onclick="toggleChatbot()">🤖 MEALBot</button>
+    <div id="chatbot-box" style="display: none;">
+      <div id="chatbot-header">
+        <span>🤖 MEALBITE Assistant</span>
+        <button onclick="toggleChatbot()">✖</button>
+      </div>
+      <div id="chatbot-messages"></div>
+      <input type="text" id="chatbot-input" placeholder="Type your message..." onkeypress="handleChatInput(event)">
+    </div>
+  </div>
+
+  <script>
+    function toggleLoginForm() {
+      const form = document.getElementById("loginForm");
+      form.style.display = form.style.display === "none" || form.style.display === "" ? "block" : "none";
+    }
+
+    function submitLogin() {
+      const id = document.getElementById("loginId").value;
+      const pass = document.getElementById("loginPassword").value;
+      if (id && pass) {
+        alert(`Welcome, ${id}!`);
+        document.getElementById("loginForm").style.display = "none";
+      } else {
+        alert("Please enter both ID and Password.");
+      }
+    }
+
+    const sliderImages = [
+      "https://img.freepik.com/free-photo/view-from-tanned-womans-stylish-outfits-talking-enjoying-tasty-food-street-cafe_197531-18196.jpg",
+      "https://media.istockphoto.com/id/1443030610/photo/young-woman-holding-a-plate-with-a-tasty-burger.jpg?s=612x612&w=0&k=20&c=VAZgRv0C8wNKJkv8TLwqB_NKJKkbEVUEplSRHsh7QsQ=",
+      "https://img.freepik.com/premium-photo/happy-funny-young-woman-with-hamburger-eating-fast-food-cafe_338491-3261.jpg",
+      "https://images.unsplash.com/photo-1551632436-cbf8dd35adfa?q=80&w=1171&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+    ];
+
+    let currentImageIndex = 0;
+    const sliderImageElement = document.getElementById("sliderImage");
+
+    function slideImage(direction) {
+      currentImageIndex += direction;
+      if (currentImageIndex >= sliderImages.length) currentImageIndex = 0;
+      if (currentImageIndex < 0) currentImageIndex = sliderImages.length - 1;
+      sliderImageElement.src = sliderImages[currentImageIndex];
+      sliderImageElement.alt = `Restaurant image ${currentImageIndex + 1}`;
+    }
+
+    let autoSlideInterval;
+    function startAutoSlide() {
+        autoSlideInterval = setInterval(() => {
+            slideImage(1);
+        }, 3000);
+    }
+
+    function stopAutoSlide() {
+        clearInterval(autoSlideInterval);
+    }
+
+    window.onload = startAutoSlide;
+
+    const imageSliderContainer = document.querySelector('.image-slider');
+    imageSliderContainer.addEventListener('mouseenter', stopAutoSlide);
+    imageSliderContainer.addEventListener('mouseleave', startAutoSlide);
+
+
+    function toggleSidebar() {
+      document.getElementById("sidebar").style.left = "0";
+      document.getElementById("overlay").style.display = "block";
+    }
+
+    function closeSidebar() {
+      document.getElementById("sidebar").style.left = "-260px";
+      document.getElementById("overlay").style.display = "none";
+    }
+
+    function closeSidebarAndScroll(targetId) {
+      document.getElementById("sidebar").style.left = "-260px";
+      document.getElementById("overlay").style.display = "none";
+
+      setTimeout(() => {
+        const targetElement = document.getElementById(targetId);
+        if (targetElement) {
+          targetElement.scrollIntoView({ behavior: 'auto', block: 'start' });
+        }
+      }, 50);
+    }
+
+    // Cart 
+    const cart = {}; 
+    
+    
+    
+    function toggleCartPopover() {
+        const popover = document.getElementById('cart-popover');
+        popover.classList.toggle('show');
+    }
+
+    function initialAddToCart(addBtn) {
+        const menuItem = addBtn.closest('.menu-item');
+        const quantityControls = menuItem.querySelector('.quantity-controls');
+        const itemName = menuItem.dataset.itemName;
+        const itemPrice = parseFloat(menuItem.dataset.itemPrice);
+
+        // Add item to cart with quantity 1
+        cart[itemName] = { quantity: 1, price: itemPrice };
+
+        
+        addBtn.style.display = 'none';
+        quantityControls.style.display = 'flex';
+        menuItem.querySelector('.quantity').textContent = '1';
+        
+        
+        updateCartDisplay();
+    }
+
+    function updateCartItem(quantityBtn, change) {
+        const menuItem = quantityBtn.closest('.menu-item');
+        const itemName = menuItem.dataset.itemName;
+        
+        if (!cart[itemName]) return; // Safeguard
+
+        let newQuantity = cart[itemName].quantity + change;
+
+        if (newQuantity > 0) {
+            
+            cart[itemName].quantity = newQuantity;
+            menuItem.querySelector('.quantity').textContent = newQuantity;
+        } else {
+            // If quantity is 0, remove item and reset UI
+            delete cart[itemName];
+            const quantityControls = menuItem.querySelector('.quantity-controls');
+            const addBtn = menuItem.querySelector('.add-to-cart-btn');
+            
+            quantityControls.style.display = 'none';
+            addBtn.style.display = 'block';
+        }
+        
+        updateCartDisplay();
+    }
+    
+    function removeItemFromCart(itemName) {
+        if (confirm(`Are you sure you want to remove ${itemName} from your cart?`)) {
+            // Find the corresponding menu item on the page to reset its UI
+            const allMenuItems = document.querySelectorAll('.menu-item');
+            allMenuItems.forEach(menuItem => {
+                if (menuItem.dataset.itemName === itemName) {
+                    const quantityControls = menuItem.querySelector('.quantity-controls');
+                    const addBtn = menuItem.querySelector('.add-to-cart-btn');
+                    quantityControls.style.display = 'none';
+                    addBtn.style.display = 'block';
+                }
+            });
+            
+            delete cart[itemName];
+            updateCartDisplay();
+        }
+    }
+
+    function updateCartDisplay() {
+      const cartItemsDiv = document.getElementById("cart-items");
+      const cartTotalSpan = document.getElementById("cart-total");
+      const cartItemCountSpan = document.getElementById("cart-item-count");
+      let total = 0;
+      let totalItems = 0;
+      cartItemsDiv.innerHTML = ""; // Clear current display
+
+      if (Object.keys(cart).length === 0) {
+        cartItemsDiv.innerHTML = "<p style='text-align: center;'>Your cart is empty.</p>";
+      } else {
+        
+
+        for (const item in cart) {
+          const itemData = cart[item];
+          totalItems += itemData.quantity;
+          const itemTotalPrice = itemData.quantity * itemData.price;
+          total += itemTotalPrice;
+
+          const p = document.createElement("p");
+          const removeBtn = document.createElement("button");
+
+          // Configure the remove button
+          removeBtn.className = 'remove-item-btn';
+          removeBtn.textContent = 'Remove';
+          
+          
+          removeBtn.onclick = function() {
+              removeItemFromCart(item);
+          };
+
+          // Build the text content and append the elements
+          p.append(`${item} x ${itemData.quantity} - ₹${itemTotalPrice.toFixed(2)} `);
+          p.appendChild(removeBtn);
+          cartItemsDiv.appendChild(p);
+        }
+      }
+      cartTotalSpan.textContent = total.toFixed(2);
+      cartItemCountSpan.textContent = totalItems;
+    }
+
+    function checkout() {
+      if (Object.keys(cart).length === 0) {
+        alert("Your cart is empty. Please add some items to order.");
+        return;
+      }
+
+      let orderSummary = "Your Order:\n\n";
+      let totalAmount = 0;
+      for (const item in cart) {
+        const itemData = cart[item];
+        const itemTotal = itemData.quantity * itemData.price;
+        orderSummary += `${item} x ${itemData.quantity} = ₹${itemTotal.toFixed(2)}\n`;
+        totalAmount += itemTotal;
+      }
+      orderSummary += `\nTotal: ₹${totalAmount.toFixed(2)}\n\n`;
+      orderSummary += "Thank you for your order! We'll process it shortly. Enjoy your MEALBITE!";
+
+      alert(orderSummary);
+      
+      
+      Object.keys(cart).forEach(key => delete cart[key]);
+      
+      //  menu item buttons
+      const allMenuItems = document.querySelectorAll('.menu-item');
+      allMenuItems.forEach(menuItem => {
+          const quantityControls = menuItem.querySelector('.quantity-controls');
+          const addBtn = menuItem.querySelector('.add-to-cart-btn');
+          if (quantityControls) quantityControls.style.display = 'none';
+          if (addBtn) addBtn.style.display = 'block';
+      });
+
+      updateCartDisplay(); // to show empty cart
+      document.getElementById('cart-popover').classList.remove('show');
+    }
+
+    // Close popover if clicked outside
+    window.addEventListener('click', function(event) {
+        const popover = document.getElementById('cart-popover');
+        const cartIcon = document.querySelector('.cart-icon');
+        // Ensure the popover is showing and the click is outside of it
+        if (popover.classList.contains('show') && !popover.contains(event.target) && !cartIcon.contains(event.target)) {
+            popover.classList.remove('show');
+        }
+    });
+
+    // check if welcome message was sent
+      let chatBotWelcomed = false
+
+    // Chatbot 
+   function toggleChatbot() {
+    const chatbotBox = document.getElementById("chatbot-box");
+    const isOpening = chatbotBox.style.display === "none" || chatbotBox.style.display === "";
+    
+    chatbotBox.style.display = isOpening ? "flex" : "none";
+
+    //  welcome message on the first open
+    if (isOpening && !chatBotWelcomed) {
+        addBotMessage("Hello! Welcome to MEALBITE Junction. How can I help you today?");
+        chatBotWelcomed = true;
+      }
+    }
+
+    function addMessage(message, type) {
+      const messagesDiv = document.getElementById("chatbot-messages");
+      const messageElement = document.createElement("div");
+      messageElement.classList.add("chat-message", `${type}-message`);
+      messageElement.innerHTML = message;
+      messagesDiv.appendChild(messageElement);
+      messagesDiv.scrollTop = messagesDiv.scrollHeight; // Scroll to bottom
+    }
+
+    function addUserMessage(message) {
+      addMessage(message, "user");
+    }
+
+    function addBotMessage(message) {
+      addMessage(message, "bot");
+    }
+
+    function handleChatInput(event) {
+      if (event.key === "Enter") {
+        const inputField = document.getElementById("chatbot-input");
+        const userMessage = inputField.value.trim();
+        if (userMessage) {
+          addUserMessage(userMessage);
+          processUserMessage(userMessage);
+          inputField.value = "";
+        }
+      }
+    }
+
+    function processUserMessage(message) {
+        const lowerCaseMessage = message.toLowerCase();
+        let botResponse = "I'm sorry, I don't understand that. Please try asking about our menu, ordering, or contact information. You can also ask about specific item prices or our delivery hours!";
+
+        if (lowerCaseMessage.includes("hello") || lowerCaseMessage.includes("hi") || lowerCaseMessage.includes("hey")) {
+            botResponse = "Hi there! Welcome to MEALBITE Junction! How can I help you today?";
+        } else if (lowerCaseMessage.includes("menu")) {
+            botResponse = "Absolutely! You can explore our delicious menu by scrolling down to the 'Our Specials' and 'Beverages & Snacks' sections, or simply click on '📋 Menu' in the sidebar to jump there directly. What are you craving?";
+        } else if (lowerCaseMessage.includes("order") || lowerCaseMessage.includes("cart")) {
+            botResponse = "To place an order, first select the quantity for your desired items on the menu, then click 'Add'. Once you're done, click the cart icon in the top-right to review your selections and checkout!";
+        } else if (lowerCaseMessage.includes("contact") || lowerCaseMessage.includes("reach us") || lowerCaseMessage.includes("phone") || lowerCaseMessage.includes("email")) {
+            botResponse = "You can easily reach us! Send us an email at <b>mealbite@example.com</b> or give us a call at <b>1800-0000-200</b>. All our contact details are also available in the '📞 Contact Us' section.";
+        } else if (lowerCaseMessage.includes("address") || lowerCaseMessage.includes("location")) {
+            botResponse = "We are an online-only delivery restaurant! This means we focus on bringing fresh and delicious food directly to your doorstep, so we don't have a physical dining location.";
+        } else if (lowerCaseMessage.includes("timing") || lowerCaseMessage.includes("hours") || lowerCaseMessage.includes("open")) {
+            botResponse = "We're open and ready to serve you from <b>9 AM to 10 PM every day</b>! Feel free to place your order anytime within these hours.";
+        } else if (lowerCaseMessage.includes("delivery")) {
+            botResponse = "Yes, we do! We offer <b>quick and reliable home delivery</b>. Just place your order on our website, and we'll bring it to you.";
+        } else if (lowerCaseMessage.includes("payment") || lowerCaseMessage.includes("pay")) {
+            botResponse = "We offer several convenient payment options: <b>credit/debit cards, net banking, and all major UPI apps</b> are accepted.";
+        } else if (lowerCaseMessage.includes("chicken tacos") || lowerCaseMessage.includes("tacos")) {
+            botResponse = "Our delicious Chicken Tacos are a must-try at <b>₹399</b>! Perfect for a hearty meal.";
+        } else if (lowerCaseMessage.includes("paneer butter masala") || lowerCaseMessage.includes("paneer")) {
+            botResponse = "Our rich Paneer Butter Masala is a vegetarian delight, priced at <b>₹299</b>. Enjoy it with some fresh bread!";
+        } else if (lowerCaseMessage.includes("chicken biryani") || lowerCaseMessage.includes("biryani")) {
+            botResponse = "Craving a flavorful meal? Our Chicken Biryani is available for <b>₹249</b>!";
+        } else if (lowerCaseMessage.includes("caesar salad") || lowerCaseMessage.includes("salad")) {
+            botResponse = "Our fresh Caesar Salad is a light and healthy option at just <b>₹49</b>.";
+        } else if (lowerCaseMessage.includes("soft drink") || lowerCaseMessage.includes("soda")) {
+            botResponse = "Quench your thirst with a Soft Drink for just <b>₹29</b>!";
+        } else if (lowerCaseMessage.includes("pizza")) {
+            botResponse = "Our Classic Cheese Pizza is a fan favorite at <b>₹69</b>!";
+        } else if (lowerCaseMessage.includes("coffee")) {
+            botResponse = "Need a pick-me-up? Our Hot Coffee is only <b>₹59</b>.";
+        } else if (lowerCaseMessage.includes("tea")) {
+            botResponse = "A comforting cup of Tea is available for <b>₹39</b>.";
+        } else if (lowerCaseMessage.includes("juice")) {
+            botResponse = "Refresh yourself with our Fresh Juice for <b>₹79</b>.";
+        } else if (lowerCaseMessage.includes("samosa")) {
+            botResponse = "Grab a crispy Samosa for just <b>₹29</b>!";
+        } else if (lowerCaseMessage.includes("momos")) {
+            botResponse = "Our delicious Steamed Momos are priced at <b>₹99</b>.";
+        } else if (lowerCaseMessage.includes("chowmin") || lowerCaseMessage.includes("noodles")) {
+            botResponse = "Enjoy our flavorful Chowmin noodles for <b>₹119</b>.";
+        } else if (lowerCaseMessage.includes("chat") || lowerCaseMessage.includes("chaat")) {
+            botResponse = "Spice up your day with our tasty Aloo Chat for <b>₹69</b>.";
+        } else if (lowerCaseMessage.includes("burger")) {
+            botResponse = "Our satisfying Burger is available for <b>₹119</b>.";
+        } else if (lowerCaseMessage.includes("dahi bara") || lowerCaseMessage.includes("dahi vada")) {
+            botResponse = "Cool down with our refreshing Dahi Bara for <b>₹79</b>.";
+        } else if (lowerCaseMessage.includes("thanks") || lowerCaseMessage.includes("thank you")) {
+            botResponse = "You're most welcome! Enjoy your meal, and let me know if you need anything else.";
+        } else if (lowerCaseMessage.includes("bye") || lowerCaseMessage.includes("goodbye")) {
+            botResponse = "Goodbye! Hope to see your order soon. Have a great day!";
+        }
+
+        setTimeout(() => addBotMessage(botResponse), 500); // Simulate typing delay
+    }
+  </script>
+</body>
+</html>
